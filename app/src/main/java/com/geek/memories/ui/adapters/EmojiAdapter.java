@@ -56,19 +56,21 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
                 binding.tvCard.setBackgroundColor(Color.BLUE);
             }
             itemView.setOnClickListener(v -> {
-                emojiGame.choose(card);
-                notifyDataSetChanged();
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        emojiGame.checkPairs(card);
-                        Log.e("size", "run: " + emojiGame.getCards().size());
-                        if (emojiGame.removeMatchedCards() == emojiGame.getCards().size()){
-                            listener.choose();
+                if (!card.isMatch()) {
+                    emojiGame.choose(card);
+                    notifyDataSetChanged();
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            emojiGame.checkPairs(card);
+                            Log.e("size", "run: " + emojiGame.getCards().size());
+                            if (emojiGame.removeMatchedCards() == emojiGame.getCards().size()) {
+                                listener.choose();
+                            }
+                            listener.onNotify();
                         }
-                        listener.onNotify();
-                    }
-                },500);
+                    }, 500);
+                }
             });
         }
     }
